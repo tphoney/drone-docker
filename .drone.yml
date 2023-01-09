@@ -57,7 +57,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/docker/Dockerfile.windows.amd64.1809
-      repo: plugins/docker
+      repo: tphoney/docker
       username:
         from_secret: docker_username
       password:
@@ -93,7 +93,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/ecr/Dockerfile.windows.amd64.1809
-      repo: plugins/docker
+      repo: tphoney/docker
       username:
         from_secret: docker_username
       password:
@@ -130,7 +130,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/gcr/Dockerfile.windows.amd64.1809
-      repo: plugins/gcr
+      repo: tphoney/gcr
       username:
         from_secret: docker_username
       password:
@@ -167,7 +167,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/acr/Dockerfile.windows.amd64.1809
-      repo: plugins/acr
+      repo: tphoney/acr
       username:
         from_secret: docker_username
       password:
@@ -204,7 +204,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/docker/Dockerfile.windows.amd64.ltsc2022
-      repo: plugins/docker
+      repo: tphoney/docker
       username:
         from_secret: docker_username
       password:
@@ -240,7 +240,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/ecr/Dockerfile.windows.amd64.ltsc2022
-      repo: plugins/ecr
+      repo: tphoney/ecr
       username:
         from_secret: docker_username
       password:
@@ -254,6 +254,7 @@ steps:
 
 depends_on:
   - testing
+  - windows-ltsc2022-docker
 
 trigger:
   ref:
@@ -276,7 +277,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/gcr/Dockerfile.windows.amd64.ltsc2022
-      repo: plugins/gcr
+      repo: tphoney/gcr
       username:
         from_secret: docker_username
       password:
@@ -290,6 +291,7 @@ steps:
 
 depends_on:
   - testing
+  - windows-ltsc2022-docker
 
 trigger:
   ref:
@@ -312,7 +314,7 @@ steps:
     image: plugins/docker
     settings:
       dockerfile: docker/acr/Dockerfile.windows.amd64.ltsc2022
-      repo: plugins/acr
+      repo: tphoney/acr
       username:
         from_secret: docker_username
       password:
@@ -326,6 +328,7 @@ steps:
 
 depends_on:
   - testing
+  - windows-ltsc2022-docker
 
 trigger:
   ref:
@@ -382,7 +385,7 @@ steps:
       dockerfile: docker/docker/Dockerfile.linux.amd64
       password:
         from_secret: docker_password
-      repo: plugins/docker
+      repo: tphoney/docker
       username:
         from_secret: docker_username
     when:
@@ -449,7 +452,7 @@ steps:
       dockerfile: docker/docker/Dockerfile.linux.arm64
       password:
         from_secret: docker_password
-      repo: plugins/docker
+      repo: tphoney/docker
       username:
         from_secret: docker_username
     when:
@@ -546,7 +549,7 @@ steps:
       dockerfile: docker/gcr/Dockerfile.linux.amd64
       password:
         from_secret: docker_password
-      repo: plugins/gcr
+      repo: tphoney/gcr
       username:
         from_secret: docker_username
     when:
@@ -608,7 +611,7 @@ steps:
       dockerfile: docker/gcr/Dockerfile.linux.arm64
       password:
         from_secret: docker_password
-      repo: plugins/gcr
+      repo: tphoney/gcr
       username:
         from_secret: docker_username
     when:
@@ -705,7 +708,7 @@ steps:
       dockerfile: docker/ecr/Dockerfile.linux.amd64
       password:
         from_secret: docker_password
-      repo: plugins/ecr
+      repo: tphoney/ecr
       username:
         from_secret: docker_username
     when:
@@ -767,7 +770,7 @@ steps:
       dockerfile: docker/ecr/Dockerfile.linux.arm64
       password:
         from_secret: docker_password
-      repo: plugins/ecr
+      repo: tphoney/ecr
       username:
         from_secret: docker_username
     when:
@@ -864,7 +867,7 @@ steps:
       dockerfile: docker/heroku/Dockerfile.linux.amd64
       password:
         from_secret: docker_password
-      repo: plugins/heroku
+      repo: tphoney/heroku
       username:
         from_secret: docker_username
     when:
@@ -926,7 +929,7 @@ steps:
       dockerfile: docker/heroku/Dockerfile.linux.arm64
       password:
         from_secret: docker_password
-      repo: plugins/heroku
+      repo: tphoney/heroku
       username:
         from_secret: docker_username
     when:
@@ -1021,7 +1024,7 @@ steps:
       dockerfile: docker/acr/Dockerfile.linux.amd64
       password:
         from_secret: docker_password
-      repo: plugins/acr
+      repo: tphoney/acr
       username:
         from_secret: docker_username
     when:
@@ -1083,7 +1086,7 @@ steps:
       dockerfile: docker/acr/Dockerfile.linux.arm64
       password:
         from_secret: docker_password
-      repo: plugins/acr
+      repo: tphoney/acr
       username:
         from_secret: docker_username
     when:
