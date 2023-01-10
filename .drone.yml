@@ -44,7 +44,7 @@ trigger:
 ---
 kind: pipeline
 type: vm
-name: windows-1809-docker
+name: windows-1809
 
 pool:
   use: windows
@@ -60,7 +60,10 @@ steps:
       CGO_ENABLED: 0
     commands:
       - go build -o release/windows/amd64/drone-docker.exe ./cmd/drone-docker
-  - name: build
+      - go build -o release/windows/amd64/drone-ecr.exe ./cmd/drone-ecr
+      - go build -o release/windows/amd64/drone-gcr.exe ./cmd/drone-gcr
+      - go build -o release/windows/amd64/drone-acr.exe ./cmd/drone-acr
+  - name: build docker plugin
     image: plugins/docker
     settings:
       dockerfile: docker/docker/Dockerfile.windows.amd64.1809
@@ -75,34 +78,7 @@ steps:
       purge: false
     when:
       event: [push, tag]
-
-depends_on:
-  - testing
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/tags/*
-
----
-kind: pipeline
-type: vm
-name: windows-1809-ecr
-
-pool:
-  use: windows
-
-platform:
-  os: windows
-
-steps:
-  - name: go build
-    image: golang:1.17
-    environment:
-      CGO_ENABLED: 0
-    commands:
-      - go build -o release/windows/amd64/drone-ecr.exe ./cmd/drone-ecr
-  - name: build
+  - name: build ecr plugin
     image: plugins/docker
     settings:
       dockerfile: docker/ecr/Dockerfile.windows.amd64.1809
@@ -116,34 +92,7 @@ steps:
       purge: false
     when:
       event: [push, tag]
-
-depends_on:
-  - windows-1809-docker
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/tags/*
-
----
-kind: pipeline
-type: vm
-name: windows-1809-gcr
-
-pool:
-  use: windows
-
-platform:
-  os: windows
-
-steps:
-  - name: go build
-    image: golang:1.17
-    environment:
-      CGO_ENABLED: 0
-    commands:
-      - go build -o release/windows/amd64/drone-gcr.exe ./cmd/drone-gcr
-  - name: build
+  - name: build gcr plugin
     image: plugins/docker
     settings:
       dockerfile: docker/gcr/Dockerfile.windows.amd64.1809
@@ -157,34 +106,7 @@ steps:
       purge: false
     when:
       event: [push, tag]
-
-depends_on:
-  - windows-1809-docker
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/tags/*
-
----
-kind: pipeline
-type: vm
-name: windows-1809-acr
-
-pool:
-  use: windows
-
-platform:
-  os: windows
-
-steps:
-  - name: go build
-    image: golang:1.17
-    environment:
-      CGO_ENABLED: 0
-    commands:
-      - go build -o release/windows/amd64/drone-acr.exe ./cmd/drone-acr
-  - name: build
+  - name: build acr plugin
     image: plugins/docker
     settings:
       dockerfile: docker/acr/Dockerfile.windows.amd64.1809
@@ -200,17 +122,18 @@ steps:
       event: [push, tag]
 
 depends_on:
-  - windows-1809-docker
+  - testing
 
 trigger:
   ref:
     - refs/heads/master
     - refs/tags/*
+    - "refs/pull/**"
 
 ---
 kind: pipeline
 type: vm
-name: windows-ltsc2022-docker
+name: windows-ltsc2022
 
 pool:
   use: windows-2022
@@ -225,11 +148,56 @@ steps:
       CGO_ENABLED: 0
     commands:
       - go build -o release/windows/amd64/drone-docker.exe ./cmd/drone-docker
-  - name: build
+      - go build -o release/windows/amd64/drone-ecr.exe ./cmd/drone-ecr
+      - go build -o release/windows/amd64/drone-gcr.exe ./cmd/drone-gcr
+      - go build -o release/windows/amd64/drone-acr.exe ./cmd/drone-acr
+  - name: build docker plugin
     image: plugins/docker
     settings:
       dockerfile: docker/docker/Dockerfile.windows.amd64.ltsc2022
       repo: tphoney/docker
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      auto_tag: true
+      auto_tag_suffix: windows-ltsc2022-amd64
+      purge: false
+    when:
+      event: [push, tag]
+  - name: build ecr plugin
+    image: plugins/docker
+    settings:
+      dockerfile: docker/ecr/Dockerfile.windows.amd64.ltsc2022
+      repo: tphoney/ecr
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      auto_tag: true
+      auto_tag_suffix: windows-ltsc2022-amd64
+      purge: false
+    when:
+      event: [push, tag]
+  - name: build gcr plugin
+    image: plugins/docker
+    settings:
+      dockerfile: docker/gcr/Dockerfile.windows.amd64.ltsc2022
+      repo: tphoney/gcr
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      auto_tag: true
+      auto_tag_suffix: windows-ltsc2022-amd64
+      purge: false
+    when:
+      event: [push, tag]
+  - name: build acr plugin
+    image: plugins/docker
+    settings:
+      dockerfile: docker/acr/Dockerfile.windows.amd64.ltsc2022
+      repo: tphoney/acr
       username:
         from_secret: docker_username
       password:
@@ -247,129 +215,7 @@ trigger:
   ref:
     - refs/heads/master
     - refs/tags/*
-
----
-kind: pipeline
-type: vm
-name: windows-ltsc2022-ecr
-
-pool:
-  use: windows-2022
-
-platform:
-  os: windows
-
-steps:
-  - name: go build
-    image: golang:1.17
-    environment:
-      CGO_ENABLED: 0
-    commands:
-      - go build -o release/windows/amd64/drone-ecr.exe ./cmd/drone-ecr
-  - name: build
-    image: plugins/docker
-    settings:
-      dockerfile: docker/ecr/Dockerfile.windows.amd64.ltsc2022
-      repo: tphoney/ecr
-      username:
-        from_secret: docker_username
-      password:
-        from_secret: docker_password
-      auto_tag: true
-      auto_tag_suffix: windows-ltsc2022-amd64
-      purge: false
-    when:
-      event: [push, tag]
-
-depends_on:
-  - windows-ltsc2022-docker
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/tags/*
-
----
-kind: pipeline
-type: vm
-name: windows-ltsc2022-gcr
-
-pool:
-  use: windows-2022
-
-platform:
-  os: windows
-
-steps:
-  - name: go build
-    image: golang:1.17
-    environment:
-      CGO_ENABLED: 0
-    commands:
-      - go build -o release/windows/amd64/drone-gcr.exe ./cmd/drone-gcr
-  - name: build
-    image: plugins/docker
-    settings:
-      dockerfile: docker/gcr/Dockerfile.windows.amd64.ltsc2022
-      repo: tphoney/gcr
-      username:
-        from_secret: docker_username
-      password:
-        from_secret: docker_password
-      auto_tag: true
-      auto_tag_suffix: windows-ltsc2022-amd64
-      purge: false
-    when:
-      event: [push, tag]
-
-depends_on:
-  - windows-ltsc2022-docker
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/tags/*
-
----
-kind: pipeline
-type: vm
-name: windows-ltsc2022-acr
-
-pool:
-  use: windows-2022
-
-platform:
-  os: windows
-
-steps:
-  - name: go build
-    image: golang:1.17
-    environment:
-      CGO_ENABLED: 0
-    commands:
-      - go build -o release/windows/amd64/drone-acr.exe ./cmd/drone-acr
-  - name: build
-    image: plugins/docker
-    settings:
-      dockerfile: docker/acr/Dockerfile.windows.amd64.ltsc2022
-      repo: tphoney/acr
-      username:
-        from_secret: docker_username
-      password:
-        from_secret: docker_password
-      auto_tag: true
-      auto_tag_suffix: windows-ltsc2022-amd64
-      purge: false
-    when:
-      event: [push, tag]
-
-depends_on:
-  - windows-ltsc2022-docker
-
-trigger:
-  ref:
-    - refs/heads/master
-    - refs/tags/*
+    - "refs/pull/**"
 
 ---
 kind: pipeline
@@ -531,8 +377,8 @@ trigger:
     - "refs/tags/**"
 
 depends_on:
-  - windows-1809-docker
-  - windows-ltsc2022-docker
+  - windows-1809
+  - windows-ltsc2022
   - linux-amd64-docker
   - linux-arm64-docker
 
@@ -686,8 +532,8 @@ trigger:
     - "refs/tags/**"
 
 depends_on:
-  - windows-1809-gcr
-  - windows-ltsc2022-gcr
+  - windows-1809
+  - windows-ltsc2022
   - linux-amd64-gcr
   - linux-arm64-gcr
 
@@ -837,8 +683,8 @@ trigger:
     - "refs/tags/**"
 
 depends_on:
-  - windows-1809-ecr
-  - windows-ltsc2022-ecr
+  - windows-1809
+  - windows-ltsc2022
   - linux-amd64-ecr
   - linux-arm64-ecr
 
@@ -1139,7 +985,7 @@ trigger:
     - "refs/tags/**"
 
 depends_on:
-  - windows-1809-acr
-  - windows-ltsc2022-acr
+  - windows-1809
+  - windows-ltsc2022
   - linux-amd64-acr
   - linux-arm64-acr
