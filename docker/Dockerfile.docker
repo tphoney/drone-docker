@@ -1,0 +1,8 @@
+FROM docker:20.10.14-dind
+
+ENV DOCKER_HOST=unix:///var/run/docker.sock
+
+ARG TARGETOS
+ARG TARGETARCH
+
+ADD release/${TARGETOS}/${TARGETARCH}/drone-docker /bin/
